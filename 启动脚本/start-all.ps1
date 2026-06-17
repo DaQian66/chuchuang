@@ -1,5 +1,6 @@
-$userPath = Join-Path $PSScriptRoot "wardrobe_user"
-$adminPath = Join-Path $PSScriptRoot "wardrobe_admin"
+$rootPath = Split-Path $PSScriptRoot -Parent
+$userPath = Join-Path $rootPath "wardrobe_user"
+$adminPath = Join-Path $rootPath "wardrobe_admin"
 
 Write-Host "========================================" -ForegroundColor Cyan
 Write-Host "  wardrobe - one-click start" -ForegroundColor White

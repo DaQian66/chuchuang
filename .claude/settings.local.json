@@ -9,7 +9,8 @@
       "PowerShell($env:PGPASSWORD = \"3119043808\"; & \"D:\\\\postgresql\\\\bin\\\\psql.exe\" -U postgres -h localhost -p 1234 -c \"DROP DATABASE IF EXISTS wardrobe;\" 2>&1; & \"D:\\\\postgresql\\\\bin\\\\psql.exe\" -U postgres -h localhost -p 1234 -c \"CREATE DATABASE wardrobe;\" 2>&1)",
       "PowerShell(Start-Sleep -Seconds 2; & \"D:\\\\postgresql\\\\bin\\\\pg_ctl.exe\" -D \"D:\\\\postgresql\\\\data\" start 2>&1; Start-Sleep -Seconds 3)",
       "PowerShell(mvn clean *)",
-      "PowerShell(mvn package *)"
+      "PowerShell(mvn package *)",
+      "Bash(cat \\\\\"D:\\\\\\\\实验8\\\\\\\\wardrobe_admin\\\\\\\\src\\\\\\\\router\\\\\\\\index.js\\\\\" *)"
     ]
   }
 }
