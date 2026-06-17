@@ -1,7 +1,9 @@
 package com.wardrobe.controller;
 
 import com.wardrobe.model.Result;
+import com.wardrobe.model.User;
 import com.wardrobe.service.CartOrderService;
+import com.wardrobe.service.UserService;
 import com.wardrobe.util.TokenUtil;
 
 import javax.servlet.ServletException;
@@ -18,6 +20,7 @@ import java.io.IOException;
 @WebServlet("/order")
 public class OrderServlet extends HttpServlet {
     private CartOrderService cartOrderService = new CartOrderService();
+    private UserService userService = new UserService();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
@@ -35,7 +38,12 @@ public class OrderServlet extends HttpServlet {
 
         String action = req.getParameter("action");
         if ("all".equals(action)) {
-            // 后台查询所有订单
+            // 后台查询所有订单（需要管理员权限）
+            User admin = userService.getUserByToken(token);
+            if (admin == null || admin.getRole() == null || admin.getRole() != 1) {
+                resp.getWriter().write(Result.error(403, "无权限，需要管理员账号").toJson());
+                return;
+            }
             Result result = cartOrderService.getAllOrders();
             resp.getWriter().write(result.toJson());
         } else {
@@ -63,6 +71,12 @@ public class OrderServlet extends HttpServlet {
             } else if ("cancel".equals(action)) {
                 cancelOrder(req, resp);
             } else if ("ship".equals(action)) {
+                // 发货操作需要管理员权限
+                User admin = userService.getUserByToken(token);
+                if (admin == null || admin.getRole() == null || admin.getRole() != 1) {
+                    resp.getWriter().write(Result.error(403, "无权限，需要管理员账号").toJson());
+                    return;
+                }
                 shipOrder(req, resp);
             } else {
                 resp.getWriter().write(Result.error("未知操作").toJson());

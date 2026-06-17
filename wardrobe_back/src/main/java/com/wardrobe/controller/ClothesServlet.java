@@ -2,7 +2,10 @@ package com.wardrobe.controller;
 
 import com.wardrobe.model.Clothes;
 import com.wardrobe.model.Result;
+import com.wardrobe.model.User;
 import com.wardrobe.service.ClothesService;
+import com.wardrobe.service.UserService;
+import com.wardrobe.util.TokenUtil;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -19,6 +22,7 @@ import java.math.BigDecimal;
 @WebServlet("/allClothes")
 public class ClothesServlet extends HttpServlet {
     private ClothesService clothesService = new ClothesService();
+    private UserService userService = new UserService();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
@@ -44,6 +48,17 @@ public class ClothesServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
         req.setCharacterEncoding("UTF-8");
+        resp.setCharacterEncoding("UTF-8");
+        resp.setContentType("application/json;charset=UTF-8");
+
+        // 验证管理员权限（新增/修改/删除服装需要管理员身份）
+        String token = req.getHeader("token");
+        User admin = userService.getUserByToken(token);
+        if (admin == null || admin.getRole() == null || admin.getRole() != 1) {
+            resp.getWriter().write(Result.error(403, "无权限，需要管理员账号").toJson());
+            return;
+        }
+
         String action = req.getParameter("action");
 
         try {

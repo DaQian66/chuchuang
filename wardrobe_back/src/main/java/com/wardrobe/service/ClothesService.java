@@ -1,6 +1,7 @@
 package com.wardrobe.service;
 
 import com.wardrobe.dao.ClothesDao;
+import com.wardrobe.dao.CartDao;
 import com.wardrobe.model.Clothes;
 import com.wardrobe.model.Result;
 
@@ -12,6 +13,7 @@ import java.util.List;
  */
 public class ClothesService {
     private ClothesDao clothesDao = new ClothesDao();
+    private CartDao cartDao = new CartDao();
 
     /**
      * 查询所有服装
@@ -93,6 +95,9 @@ public class ClothesService {
             return Result.error("服装ID不能为空");
         }
         try {
+            // 先删除购物车中关联此商品的记录（外键约束）
+            cartDao.deleteByClothesId(id);
+            // 再删除商品
             clothesDao.deleteClothes(id);
             return Result.success("删除成功");
         } catch (Exception e) {

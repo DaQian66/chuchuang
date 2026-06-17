@@ -92,4 +92,18 @@ public class CartDao {
             DBUtil.close(conn);
         }
     }
+
+    /**
+     * 根据服装ID删除购物车记录（删除服装前清理关联数据）
+     */
+    public void deleteByClothesId(Integer clothesId) throws Exception {
+        Connection conn = null;
+        try {
+            conn = DBUtil.getConnection();
+            String sql = "DELETE FROM t_cart WHERE clothes_id = ?";
+            qr.update(conn, sql, clothesId);
+        } finally {
+            DBUtil.close(conn);
+        }
+    }
 }

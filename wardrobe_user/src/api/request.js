@@ -14,7 +14,7 @@ api.interceptors.request.use(config => {
   return config
 })
 
-// 响应拦截器 - 处理 401
+// 响应拦截器 - 处理 401 和 403
 api.interceptors.response.use(
   response => {
     const result = response.data
@@ -23,6 +23,8 @@ api.interceptors.response.use(
       localStorage.removeItem('user')
       alert('登录已过期，请重新登录')
       window.location.href = '/#/login'
+    } else if (result.code === 403) {
+      alert(result.msg || '无权限访问')
     }
     return response
   },

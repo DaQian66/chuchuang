@@ -66,7 +66,7 @@ public class LoginOrRegServlet extends HttpServlet {
     }
 
     /**
-     * 用户登录
+     * 用户登录（仅允许普通用户登录，管理员请使用管理员登录）
      */
     private void handleLogin(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         String username = req.getParameter("username");
@@ -76,6 +76,11 @@ public class LoginOrRegServlet extends HttpServlet {
 
         if (result.getCode() == 200) {
             LoginResult lr = (LoginResult) result.getData();
+            // 管理员不能通过用户登录入口登录
+            if (lr.getUser() != null && lr.getUser().getRole() != null && lr.getUser().getRole() == 1) {
+                resp.getWriter().write(Result.error("管理员请使用管理员登录").toJson());
+                return;
+            }
             // 返回不含密码的用户信息
             lr.getUser().setPassword(null);
         }
